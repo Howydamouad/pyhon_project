@@ -1,0 +1,132 @@
+import csv
+class Employee:
+    def __init__(self,emp_id,name,position,salary,email):
+        self.emp_id = emp_id
+        self.name = name
+        self.position = position
+        self.salary = salary
+        self.email = email
+    def display_info (self):
+        return f"ID : {self.emp_id}, Name : {self.name}, Position : {self.position}, Salary : {self.salary}"
+
+class EmployeeManager:
+    def ___init__(self):
+        self.employees  = []
+    def add_employee(self,employee):
+        self.employees.append(employee)
+        print(f"Employee {employee.name} added successfully!")
+    def list_employees(self):
+        if not self.employees:
+            print("No employee found.")
+        else:
+            print("Employee list: ")
+            for emp in self.employees:
+                print(emp.display_info())
+    def update_employee(self,emp_id,name=None, position = None, salary = None, email= None):
+        for emp in self.employees:
+            if emp.emp_id == emp_id:
+                if name: emp.name=name
+                if position: emp.position = position
+                if salary:emp.salary = salary
+                if email : emp.email = email
+                print(f"Employee {emp_id} updated successfully")
+                return
+            print(f"Employee {emp_id} not found!")
+    def delete_employee(self,emp_id):
+        for emp in self.employees:
+            if emp.emp_id == emp_id :
+                self.employees.remove(emp)
+                print(f"Employee {emp_id} deleted successfully")
+                return
+            print(f"Employee{emp_id} not found")
+    def search_employee(self,emp_id):
+        for emp in self.employees :
+            if emp.emp_id == emp_id:
+                print(emp.display_info())
+                return
+        print(f"Employee {emp_id} not found!")
+    def save_employees_to_file(self):
+        with open('employees.csv',mode='w',newline='') as file:
+            writer = csv.writer(file)
+        writer.writerow(['ID', 'Name', 'Position', 'Salary', 'Email'])
+        for emp in self.employees:
+            writer.writerow([emp.emp_id,emp.name,emp.position,emp.salary,emp.email])
+    def load_employees_from_file(self):
+        try:
+            with open('employees.csv', mode='r') as file:
+                reader = csv.reader(file)
+                next(reader)
+                for row in reader:
+                    emp_id,name,position,salary,email=row
+                    employee = Employee(int(emp_id),name,position,float(salary),email)
+                    self.employees.append(employee)
+        except FileNotFoundError:
+               print("No previous employee data found , starting fresh!")
+
+def display_menu():
+        print("\n--------Employee Management system--------")
+        print("1. Add Employee")
+        print("2. List Employees")
+        print("3. Update Employee")
+        print("4. Delete Employee")
+        print("5. Search Employee")
+        print("6. Exit")
+def main():
+     maneger = EmployeeManager()
+     while True:
+            display_menu()
+            choice = input("Enter your choice(1:6) : ")
+            if choice == '1' :
+                try:
+                    emp_id = int(input("Enter Employee ID: "))
+                    name = input("Enter Employee name")
+                    position =  input("Enter Position: ")
+                    salary =  float(input("Enter Employee salary: "))
+                    email = (input("Enter Employee Email: "))
+                    emp = Employee(emp_id,name,position,salary,email)
+                    maneger.add_employee(emp)
+                except ValueError:
+                    print("Invalid input! please enter a valid data .")
+            elif choice == '2' :
+                maneger.list_employees()
+
+            elif choice == '3' :
+                try:
+                    emp_id = int(input("Enter Employee ID: "))
+                    name = input("Enter Employee name")
+                    position = input("Enter Position: ")
+                    salary = float(input("Enter Employee salary: "))
+                    email = (input("Enter Employee Email: "))
+                    salary = float(salary) if salary else None
+                    maneger.update_employee(emp_id, name if name else None, position if position else None, salary, email if email else None)
+
+                except ValueError:
+                    print("Invalid input! please enter a valid data .")
+
+            elif choice == '4' :
+                try:
+                    emp_id = int(input("Enter Employee ID to Delete: "))
+                    maneger.delete_employee(emp_id)
+                except ValueError:
+                    print("Invalid input! Please enter a valid Employee ID.")
+
+            elif choice == '5' :
+                try:
+                    emp_id = int(input("Enter Employee ID to search: "))
+                    maneger.search_employee(emp_id)
+                except ValueError :
+                    print("Invalid input! Please enter a valid Employee ID.")
+
+            elif choice == '6' :
+                print("Exiting the program...")
+                break
+
+            else:
+                print("Invalid choice! Please try again.")
+
+if __name__ == "__main__":
+    main()
+
+
+
+
